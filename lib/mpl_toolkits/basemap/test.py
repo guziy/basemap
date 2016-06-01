@@ -38,7 +38,7 @@ class TestRotateVector(TestCase):
     def test_nan(self):
         B = Basemap()
         u,v,lat,lon=self.make_array()
-        # Set one element to 0, so that the vector magnitude is 0. 
+        # Set one element to 0, so that the vector magnitude is 0.
         u[1,1] = 0.
         ru, rv = B.rotate_vector(u,v, lon, lat)
         assert not np.isnan(ru).any()
@@ -160,7 +160,7 @@ class TestShiftdata(TestCase):
         lonsout = bm.shiftdata(lonsin[:, :2])
         assert_almost_equal(lonsout_expected, lonsout)
 
-@skipIf(PY3 and LooseVersion(pyproj.__version__) <= LooseVersion("1.9.4"), 
+@skipIf(PY3 and LooseVersion(pyproj.__version__) <= LooseVersion("1.9.4"),
         "Test skipped in Python 3.x with pyproj version 1.9.4 and below.")
 class TestProjectCoords(TestCase):
     def get_data(self):
@@ -204,6 +204,31 @@ class TestInputValidation(TestCase):
         assert bmap1.proj4string == bmap2.proj4string
 
 
+
+class TestEtopoForDifferentProjections(TestCase):
+
+
+
+    def test_rotpole(self):
+        """
+        Should not fail
+        """
+        bmap_params = {
+                        'llcrnrlat': 39.004303137858841,
+                        'urcrnrlat': 62.443077596938053,
+                        'projection': 'rotpole',
+                        'llcrnrlon': -86.99883217016388,
+                        'urcrnrlon': -40.221671371989302,
+                        'lon_0': -73.350000000000009,
+                        'o_lat_p': 37.878708451507158,
+                        'resolution': 'i',
+                        'o_lon_p': 176.70918638372871
+        }
+
+        m = Basemap(**bmap_params)
+        m.etopo()
+
+
 def test():
     """
     Run some tests.
@@ -224,7 +249,7 @@ if __name__ == '__main__':
     import unittest
 
     from mpl_toolkits.basemap.diagnostic import package_versions
-    
+
     if '--verbose' in sys.argv or '-v' in sys.argv:
         pkg_vers = package_versions()
         print('Basemaps installed package versions:')
