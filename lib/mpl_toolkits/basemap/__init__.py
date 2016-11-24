@@ -4147,11 +4147,11 @@ class Basemap(object):
                 # projection grid.
                 # nx and ny chosen to have roughly the
                 # same horizontal res as original image.
-                if self.projection != 'cyl':
+                if self.projection not in ['cyl', 'rotpole']:
                     dx = 2.*np.pi*self.rmajor/float(nlons)
                     nx = int((self.xmax-self.xmin)/dx)+1
                     ny = int((self.ymax-self.ymin)/dx)+1
-                else:
+                elif self.projection not in ["rotpole", ]:
                     dx = 360./float(nlons)
                     nx = int((self.urcrnrlon-self.llcrnrlon)/dx)+1
                     ny = int((self.urcrnrlat-self.llcrnrlat)/dx)+1
@@ -4176,9 +4176,11 @@ class Basemap(object):
                     ma.masked_array(self._bm_rgba_warped,mask=mask)
                     # make points outside projection limb transparent.
                     self._bm_rgba_warped = self._bm_rgba_warped.filled(0.)
+                elif self.projection in ["rotpole", ]:
+                    pass
                 # treat pseudo-cyl projections such as mollweide, robinson and sinusoidal.
-                elif self.projection in _pseudocyl and \
-                     self.projection != 'hammer':
+                elif (self.projection in _pseudocyl and \
+                     self.projection != 'hammer'):
                     lonsr,latsr = self(x,y,inverse=True)
                     mask = ma.zeros((ny,nx,4),np.int8)
                     lon_0 = self.projparams['lon_0']
@@ -4319,7 +4321,7 @@ f=image" %\
                          from xpixels and the aspect ratio of the
                          map projection region.
         format           desired image format (default 'png')
-        alpha            The alpha blending value, 
+        alpha            The alpha blending value,
                          between 0 (transparent) and 1 (opaque) (default None)
         verbose          if True, print WMS server info (default
                          False).

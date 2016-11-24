@@ -4,6 +4,8 @@ from mpl_toolkits.basemap import Basemap, shiftgrid
 import numpy as np
 import pyproj
 
+import logging
+
 # beginnings of a test suite.
 
 from numpy.testing import TestCase, assert_almost_equal
